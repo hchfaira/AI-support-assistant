@@ -158,7 +158,26 @@ uvicorn src.api.main:app --reload
 
 # Run notebooks
 jupyter notebook notebooks/
+
+# Run the test suite
+pytest tests/ -v
+
+# Run the full four-experiment evaluation comparison
+python -m evaluation.retrieval_metrics
+python -m evaluation.reranker_metrics
+python -m evaluation.latency_benchmark
+
+# Local full-stack dev (API + Triton, GPU required for Triton)
+docker compose up --build
 ```
+
+All embedding/reranker/LLM-backed modules automatically fall back to lightweight
+CPU-only backends (TF-IDF embeddings, lexical-overlap reranking, template-based
+generation) when `sentence-transformers`/`torch` or GPU resources aren't
+available, so the entire pipeline, API, tests and notebooks above run
+end-to-end without a GPU. Swap in the real models (`BAAI/bge-m3`,
+`BAAI/bge-reranker-v2-m3`, `Qwen2.5-3B-Instruct`) once running on GPU
+infrastructure -- no other code changes required.
 
 ## 9. Roadmap (8 weeks)
 
