@@ -1,0 +1,74 @@
+[
+  {
+    "doc_id": "billing_policy.pdf",
+    "page": 12,
+    "title": "Billing Policy",
+    "text": "If a customer is charged twice for the same subscription period, the duplicate charge must be refunded within 5 business days. Customers should contact support with their invoice ID. Refunds are processed automatically if a duplicate charge is detected by the billing reconciliation job."
+  },
+  {
+    "doc_id": "duplicate_payment_procedure.pdf",
+    "page": 3,
+    "title": "Duplicate Payment Procedure",
+    "text": "To resolve a duplicate payment complaint: verify the two charges share the same subscription ID and billing period, confirm with the payment gateway logs, then issue a refund for the duplicate transaction. Escalate to billing engineering if the duplicate persists after refund."
+  },
+  {
+    "doc_id": "refund_policy.pdf",
+    "page": 1,
+    "title": "Refund Policy",
+    "text": "Refund requests must be submitted within 30 days of the charge. Approved refunds are returned to the original payment method within 7-10 business days. Partial refunds are available for annual plans cancelled mid-term."
+  },
+  {
+    "doc_id": "subscription_cancellation.pdf",
+    "page": 5,
+    "title": "Subscription Cancellation",
+    "text": "Customers can cancel their subscription at any time from account settings. Cancellation takes effect at the end of the current billing cycle. No further charges will occur after cancellation is confirmed."
+  },
+  {
+    "doc_id": "account_creation.pdf",
+    "page": 1,
+    "title": "Account Creation",
+    "text": "To create an account, provide a valid email address and set a password meeting the complexity requirements. Email verification is required before the account can access premium features."
+  },
+  {
+    "doc_id": "payment_troubleshooting.pdf",
+    "page": 8,
+    "title": "Payment Troubleshooting",
+    "text": "If a payment fails, check that the card has not expired and that the billing address matches the card issuer records. Retry the payment after 24 hours if the issue persists due to a temporary gateway timeout."
+  },
+  {
+    "doc_id": "password_reset.pdf",
+    "page": 2,
+    "title": "Password Reset",
+    "text": "Users can reset their password from the login page by requesting a reset link sent to their registered email. The link expires after 1 hour for security reasons."
+  },
+  {
+    "doc_id": "premium_features.pdf",
+    "page": 4,
+    "title": "Premium Features",
+    "text": "The Premium plan includes priority support, advanced analytics, unlimited exports, and API access with a higher rate limit than the free tier."
+  },
+  {
+    "doc_id": "data_export_guide.pdf",
+    "page": 6,
+    "title": "Data Export Guide",
+    "text": "Customers can export their data in CSV or JSON format from the account dashboard. Large exports above 1GB are processed asynchronously and a download link is emailed once ready."
+  },
+  {
+    "doc_id": "two_factor_auth.pdf",
+    "page": 2,
+    "title": "Two-Factor Authentication",
+    "text": "Two-factor authentication can be enabled in security settings using an authenticator app or SMS. Recovery codes should be stored safely in case the second factor device is lost."
+  },
+  {
+    "doc_id": "escalation_policy.pdf",
+    "page": 1,
+    "title": "Escalation Policy",
+    "text": "Tickets must be escalated to a human agent when they involve repeated billing disputes, legal threats, data loss, or when the customer explicitly requests a manager. High priority billing issues with no automatic resolution should always be escalated."
+  },
+  {
+    "doc_id": "api_rate_limits.pdf",
+    "page": 9,
+    "title": "API Rate Limits",
+    "text": "Free tier API requests are limited to 100 requests per hour. Premium tier allows 5000 requests per hour. Exceeding the limit returns an HTTP 429 response with a Retry-After header."
+  }
+]

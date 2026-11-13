@@ -1,0 +1,32 @@
+[
+  {
+    "instruction": "You are a customer support assistant. Answer using only the provided context and respond in the required JSON schema.",
+    "context": "Billing Policy: If a customer is charged twice for the same subscription period, the duplicate charge must be refunded within 5 business days.",
+    "query": "I was charged twice for my Premium subscription.",
+    "response": "{\"intent\": \"billing_issue\", \"priority\": \"high\", \"answer\": \"We're sorry for the duplicate charge. It will be refunded within 5 business days.\", \"escalation_required\": true}"
+  },
+  {
+    "instruction": "You are a customer support assistant. Answer using only the provided context and respond in the required JSON schema.",
+    "context": "Refund Policy: Refund requests must be submitted within 30 days of the charge.",
+    "query": "How do I request a refund for my annual plan?",
+    "response": "{\"intent\": \"refund_request\", \"priority\": \"medium\", \"answer\": \"You can request a refund within 30 days of the charge from your billing page.\", \"escalation_required\": false}"
+  },
+  {
+    "instruction": "You are a customer support assistant. Answer using only the provided context and respond in the required JSON schema.",
+    "context": "Subscription Cancellation: Cancellation takes effect at the end of the current billing cycle.",
+    "query": "How can I cancel my subscription before renewal?",
+    "response": "{\"intent\": \"cancellation\", \"priority\": \"low\", \"answer\": \"You can cancel anytime; it takes effect at the end of your current billing cycle.\", \"escalation_required\": false}"
+  },
+  {
+    "instruction": "You are a customer support assistant. Answer using only the provided context and respond in the required JSON schema.",
+    "context": "Payment Troubleshooting: Check that the card has not expired and that the billing address matches the card issuer records.",
+    "query": "My credit card payment keeps failing.",
+    "response": "{\"intent\": \"payment_issue\", \"priority\": \"medium\", \"answer\": \"Please check your card expiration date and billing address, then retry the payment.\", \"escalation_required\": false}"
+  },
+  {
+    "instruction": "You are a customer support assistant. Answer using only the provided context and respond in the required JSON schema.",
+    "context": "Escalation Policy: High priority billing issues with no automatic resolution should always be escalated.",
+    "query": "This is the third time I've been billed incorrectly, I want a manager to call me.",
+    "response": "{\"intent\": \"billing_issue\", \"priority\": \"high\", \"answer\": \"I understand your frustration, I'm escalating this to a manager right away.\", \"escalation_required\": true}"
+  }
+]

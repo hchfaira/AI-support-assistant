@@ -1,0 +1,82 @@
+[
+  {
+    "query": "I was charged twice for my Premium subscription and already filed a complaint last week.",
+    "intent": "billing_issue",
+    "priority": "high",
+    "sentiment": "negative",
+    "relevant_docs": ["billing_policy.pdf", "duplicate_payment_procedure.pdf"],
+    "escalation_required": true
+  },
+  {
+    "query": "How do I request a refund for my annual plan?",
+    "intent": "refund_request",
+    "priority": "medium",
+    "sentiment": "neutral",
+    "relevant_docs": ["refund_policy.pdf"],
+    "escalation_required": false
+  },
+  {
+    "query": "How can I cancel my subscription before the renewal date?",
+    "intent": "cancellation",
+    "priority": "low",
+    "sentiment": "neutral",
+    "relevant_docs": ["subscription_cancellation.pdf"],
+    "escalation_required": false
+  },
+  {
+    "query": "My credit card payment keeps failing, what should I check?",
+    "intent": "payment_issue",
+    "priority": "medium",
+    "sentiment": "negative",
+    "relevant_docs": ["payment_troubleshooting.pdf"],
+    "escalation_required": false
+  },
+  {
+    "query": "I forgot my password and the reset email never arrives.",
+    "intent": "account_access",
+    "priority": "medium",
+    "sentiment": "negative",
+    "relevant_docs": ["password_reset.pdf"],
+    "escalation_required": false
+  },
+  {
+    "query": "What is included in the Premium plan compared to free?",
+    "intent": "product_question",
+    "priority": "low",
+    "sentiment": "neutral",
+    "relevant_docs": ["premium_features.pdf"],
+    "escalation_required": false
+  },
+  {
+    "query": "How do I export all of my account data?",
+    "intent": "data_export",
+    "priority": "low",
+    "sentiment": "neutral",
+    "relevant_docs": ["data_export_guide.pdf"],
+    "escalation_required": false
+  },
+  {
+    "query": "Can I enable two factor authentication with an authenticator app?",
+    "intent": "security_question",
+    "priority": "low",
+    "sentiment": "neutral",
+    "relevant_docs": ["two_factor_auth.pdf"],
+    "escalation_required": false
+  },
+  {
+    "query": "I keep hitting rate limit errors on the API, how can I increase my quota?",
+    "intent": "api_question",
+    "priority": "medium",
+    "sentiment": "negative",
+    "relevant_docs": ["api_rate_limits.pdf", "premium_features.pdf"],
+    "escalation_required": false
+  },
+  {
+    "query": "This is the third time I've been billed incorrectly, I want a manager to call me.",
+    "intent": "billing_issue",
+    "priority": "high",
+    "sentiment": "negative",
+    "relevant_docs": ["billing_policy.pdf", "escalation_policy.pdf"],
+    "escalation_required": true
+  }
+]
