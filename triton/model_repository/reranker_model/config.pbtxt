@@ -1,0 +1,41 @@
+name: "reranker_model"
+backend: "onnxruntime"
+max_batch_size: 32
+
+input [
+  {
+    name: "input_ids"
+    data_type: TYPE_INT64
+    dims: [ -1 ]
+  },
+  {
+    name: "attention_mask"
+    data_type: TYPE_INT64
+    dims: [ -1 ]
+  }
+]
+
+output [
+  {
+    name: "logits"
+    data_type: TYPE_FP32
+    dims: [ 1 ]  # single relevance score per (query, document) pair
+  }
+]
+
+dynamic_batching {
+  preferred_batch_size: [ 8, 16, 32 ]
+  max_queue_delay_microseconds: 2000
+}
+
+instance_group [
+  {
+    kind: KIND_GPU
+    count: 1
+  }
+]
+
+# Export the reranker to ONNX before deploying, e.g.:
+#   optimum-cli export onnx --model BAAI/bge-reranker-v2-m3 --task text-classification \
+#       triton/model_repository/reranker_model/1/
+# then rename the exported file to `model.onnx`.

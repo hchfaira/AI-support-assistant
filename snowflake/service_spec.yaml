@@ -1,0 +1,41 @@
+# Snowpark Container Services service specification for the Triton inference
+# service (embedding, reranker and fine-tuned LLM models).
+#
+# Deploy with:
+#   snow spcs image-repository create SERVING.TRITON_IMAGES
+#   docker tag enterprise-ai-support-triton:latest <registry>/triton:latest
+#   docker push <registry>/triton:latest
+#   CREATE SERVICE SUPPORT_ASSISTANT_TRITON_SERVICE
+#     IN COMPUTE POOL SUPPORT_ASSISTANT_GPU_POOL
+#     FROM SPECIFICATION_FILE = 'snowflake/service_spec.yaml';
+
+spec:
+  containers:
+    - name: triton-server
+      image: /enterprise_ai_support/serving/triton_images/triton:latest
+      resources:
+        requests:
+          nvidia.com/gpu: 1
+        limits:
+          nvidia.com/gpu: 1
+      volumeMounts:
+        - name: model-repository
+          mountPath: /models
+      readinessProbe:
+        port: 8000
+        path: /v2/health/ready
+      env:
+        MODEL_REPOSITORY: /models
+  volumes:
+    - name: model-repository
+      source: "@KNOWLEDGE_BASE.MODEL_ARTIFACTS_STAGE"
+  endpoints:
+    - name: http
+      port: 8000
+      public: false
+    - name: grpc
+      port: 8001
+      public: false
+    - name: metrics
+      port: 8002
+      public: false
