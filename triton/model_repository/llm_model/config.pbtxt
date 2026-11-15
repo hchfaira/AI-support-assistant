@@ -1,0 +1,37 @@
+name: "llm_model"
+backend: "vllm"
+max_batch_size: 0  # vLLM manages batching internally (continuous/in-flight batching)
+
+input [
+  {
+    name: "text_input"
+    data_type: TYPE_STRING
+    dims: [ 1 ]
+  }
+]
+
+output [
+  {
+    name: "text_output"
+    data_type: TYPE_STRING
+    dims: [ 1 ]
+  }
+]
+
+instance_group [
+  {
+    kind: KIND_MODEL
+  }
+]
+
+# `model.json` (alongside this config, under 1/) holds the vLLM engine args,
+# e.g.:
+# {
+#   "model": "checkpoints/merged-support-assistant",
+#   "disable_log_requests": true,
+#   "gpu_memory_utilization": 0.9,
+#   "max_model_len": 4096,
+#   "dtype": "bfloat16"
+# }
+#
+# See: https://github.com/triton-inference-server/vllm_backend
