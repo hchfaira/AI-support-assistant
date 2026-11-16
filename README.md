@@ -84,7 +84,7 @@ enterprise-ai-support/ (this repo)
 ├── data/                 # raw / processed / evaluation / sample datasets
 ├── notebooks/            # model comparison notebooks (see below)
 ├── src/
-│   ├── data_engineering/ # ingestion, parsing, chunking
+│   ├── data_engineering/ # ingestion, parsing, chunking, HF dataset loaders
 │   ├── embeddings/       # embedding training/inference/evaluation
 │   ├── reranker/         # cross-encoder training/inference/evaluation
 │   ├── llm/              # QLoRA fine-tuning, adapter merge, evaluation
@@ -109,6 +109,39 @@ Swap the model names for the larger production models (`BAAI/bge-m3`,
 | `02_embedding_model_comparison.ipynb` | Compare embedding models on Recall@K / MRR@10 / NDCG@10, latency. |
 | `03_reranker_comparison.ipynb` | Compare retrieval **with vs without** cross-encoder reranking. |
 | `04_llm_finetuning_comparison.ipynb` | Compare base vs QLoRA fine-tuned LLM (ROUGE-L, format compliance). |
+| `05_bitext_support_dataset_colab.ipynb` | Build a real RAG knowledge base + LLM SFT dataset from the Bitext customer-support dataset and fine-tune the LLM on it; designed for a free Colab/Kaggle GPU with a `MAX_SAMPLES` toggle for a low-compute CPU smoke test. |
+
+### RAG knowledge base + LLM SFT dataset (real, open-source)
+
+`src/data_engineering/support_dataset_builder.py` builds this repo's RAG
+knowledge base and LLM SFT dataset from
+[`bitext/Bitext-customer-support-llm-chatbot-training-dataset`](https://huggingface.co/datasets/bitext/Bitext-customer-support-llm-chatbot-training-dataset)
+(instruction + category + intent + agent response, ~26.8k rows) — no
+manual data drop needed:
+
+```bash
+# Fast, low-compute smoke test (CPU, subsampled)
+python -m src.data_engineering.support_dataset_builder --max-samples 300
+
+# Full build (writes data/processed/bitext_knowledge_base.json and
+# data/processed/bitext_sft_dataset.json)
+python -m src.data_engineering.support_dataset_builder
+```
+
+The knowledge base is one canonical document per intent (dedup'd from the
+dataset's agent responses) and is directly loadable by
+`src.data_engineering.ingestion.load_documents_from_directory("data/processed")`
+for hybrid retrieval/reranking — same role as `data/sample/knowledge_base.json`.
+The SFT dataset grounds each example's `context` in its matching
+knowledge-base document, in the exact schema
+`src.llm.finetuning.load_sft_dataset` expects — same role as
+`data/sample/sft_dataset.json` — so fine-tuning teaches the LLM to answer
+from retrieved context the same way `src.rag.generation.answer_query` calls
+it at inference time. Priority and escalation flags are derived with a
+keyword heuristic (see `derive_priority`/`derive_escalation`) — adjust the
+keyword lists to match your own production definitions. See
+`05_bitext_support_dataset_colab.ipynb` for an end-to-end walkthrough
+including QLoRA fine-tuning.
 
 ## 5. The models
 
