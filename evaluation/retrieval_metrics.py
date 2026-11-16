@@ -21,10 +21,18 @@ def load_eval_tickets(path: str | Path = "data/sample/eval_tickets.json") -> lis
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
-def run_retrieval_only_vs_hybrid() -> dict:
-    """Compare vector-only retrieval (Baseline) vs hybrid BM25+vector (Experiment 1)."""
-    documents = load_sample_knowledge_base()
-    tickets = load_eval_tickets()
+def run_retrieval_only_vs_hybrid(
+    documents: list | None = None, tickets: list[dict] | None = None
+) -> dict:
+    """Compare vector-only retrieval (Baseline) vs hybrid BM25+vector (Experiment 1).
+
+    Defaults to the bundled sample knowledge base/eval tickets; pass
+    `documents`/`tickets` (e.g. loaded from `data/processed/` via
+    `src.data_engineering.support_dataset_builder`) to run this comparison
+    against a different corpus.
+    """
+    documents = documents if documents is not None else load_sample_knowledge_base()
+    tickets = tickets if tickets is not None else load_eval_tickets()
     queries = [t["query"] for t in tickets]
     relevant = [t["relevant_docs"] for t in tickets]
 
