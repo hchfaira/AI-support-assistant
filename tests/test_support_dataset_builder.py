@@ -8,6 +8,7 @@ import json
 from src.data_engineering.ingestion import load_documents_from_directory
 from src.data_engineering.support_dataset_builder import (
     build,
+    build_eval_tickets,
     build_knowledge_base,
     build_sft_dataset,
     derive_escalation,
@@ -90,7 +91,20 @@ def test_knowledge_base_output_is_loadable_by_ingestion(tmp_path):
     assert {d.doc_id for d in documents} == {"cancel_order", "track_refund", "contact_human_agent"}
 
 
-def test_build_writes_knowledge_base_and_sft_files(tmp_path, monkeypatch):
+def test_build_eval_tickets_maps_query_to_its_intent_doc_id():
+    tickets = build_eval_tickets(FIXTURE_RECORDS, n=50)
+    assert len(tickets) == len(FIXTURE_RECORDS)
+
+    ticket = next(t for t in tickets if t["query"] == "I need to cancel order 12345")
+    assert ticket["relevant_docs"] == ["cancel_order"]
+
+
+def test_build_eval_tickets_subsamples_when_n_is_smaller():
+    tickets = build_eval_tickets(FIXTURE_RECORDS, n=2, seed=1)
+    assert len(tickets) == 2
+
+
+def test_build_writes_knowledge_base_sft_and_eval_ticket_files(tmp_path, monkeypatch):
     import src.data_engineering.support_dataset_builder as builder_module
 
     monkeypatch.setattr(
@@ -100,6 +114,8 @@ def test_build_writes_knowledge_base_and_sft_files(tmp_path, monkeypatch):
 
     kb_path = tmp_path / "bitext_knowledge_base.json"
     sft_path = tmp_path / "bitext_sft_dataset.json"
-    assert kb_path.exists() and sft_path.exists()
+    tickets_path = tmp_path / "bitext_eval_tickets.json"
+    assert kb_path.exists() and sft_path.exists() and tickets_path.exists()
     assert len(json.loads(kb_path.read_text())) == 3
     assert len(json.loads(sft_path.read_text())) == len(FIXTURE_RECORDS)
+    assert len(json.loads(tickets_path.read_text())) == len(FIXTURE_RECORDS)

@@ -106,8 +106,8 @@ Swap the model names for the larger production models (`BAAI/bge-m3`,
 | Notebook | Purpose |
 |---|---|
 | `01_eda.ipynb` | Explore the sample support ticket / knowledge base dataset. |
-| `02_embedding_model_comparison.ipynb` | Compare embedding models on Recall@K / MRR@10 / NDCG@10, latency. |
-| `03_reranker_comparison.ipynb` | Compare retrieval **with vs without** cross-encoder reranking. |
+| `02_embedding_model_comparison.ipynb` | Compare embedding models on Recall@K / MRR@10 / NDCG@10, latency. Set `DATA_SOURCE = "bitext"` to run against the real knowledge base instead of the sample. |
+| `03_reranker_comparison.ipynb` | Compare retrieval **with vs without** cross-encoder reranking. Set `DATA_SOURCE = "bitext"` to run against the real knowledge base instead of the sample. |
 | `04_llm_finetuning_comparison.ipynb` | Compare base vs QLoRA fine-tuned LLM (ROUGE-L, format compliance). |
 | `05_bitext_support_dataset_colab.ipynb` | Build a real RAG knowledge base + LLM SFT dataset from the Bitext customer-support dataset and fine-tune the LLM on it; designed for a free Colab/Kaggle GPU with a `MAX_SAMPLES` toggle for a low-compute CPU smoke test. |
 
@@ -123,8 +123,8 @@ manual data drop needed:
 # Fast, low-compute smoke test (CPU, subsampled)
 python -m src.data_engineering.support_dataset_builder --max-samples 300
 
-# Full build (writes data/processed/bitext_knowledge_base.json and
-# data/processed/bitext_sft_dataset.json)
+# Full build (writes data/processed/bitext_knowledge_base.json,
+# data/processed/bitext_sft_dataset.json and data/processed/bitext_eval_tickets.json)
 python -m src.data_engineering.support_dataset_builder
 ```
 
@@ -137,9 +137,12 @@ knowledge-base document, in the exact schema
 `src.llm.finetuning.load_sft_dataset` expects — same role as
 `data/sample/sft_dataset.json` — so fine-tuning teaches the LLM to answer
 from retrieved context the same way `src.rag.generation.answer_query` calls
-it at inference time. Priority and escalation flags are derived with a
-keyword heuristic (see `derive_priority`/`derive_escalation`) — adjust the
-keyword lists to match your own production definitions. See
+it at inference time. Eval tickets (query/relevant_docs) are also built
+(same role as `data/sample/eval_tickets.json`) so `02_embedding_model_comparison.ipynb`
+and `03_reranker_comparison.ipynb` can be pointed at the real knowledge base
+by setting `DATA_SOURCE = "bitext"`. Priority and escalation flags are
+derived with a keyword heuristic (see `derive_priority`/`derive_escalation`)
+— adjust the keyword lists to match your own production definitions. See
 `05_bitext_support_dataset_colab.ipynb` for an end-to-end walkthrough
 including QLoRA fine-tuning.
 

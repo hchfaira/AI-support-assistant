@@ -12,6 +12,8 @@ intent, which is exactly what both halves of the RAG+LLM pipeline need:
 - An **SFT dataset** (instruction/context/query/response) in the exact
   schema `src.llm.finetuning.load_sft_dataset` expects -- same role as
   `data/sample/sft_dataset.json`.
+- **Eval tickets** (query/relevant_docs) for the embedding/reranker
+  comparison notebooks -- same role as `data/sample/eval_tickets.json`.
 
 Usage:
     python -m src.data_engineering.support_dataset_builder --max-samples 500
@@ -117,15 +119,35 @@ def build_sft_dataset(records: list[dict], knowledge_base: list[dict]) -> list[d
     return sft_examples
 
 
+def build_eval_tickets(records: list[dict], n: int = 50, seed: int = 42) -> list[dict]:
+    """Build (query, relevant_docs) retrieval/reranker eval tickets, in the
+    same schema as `data/sample/eval_tickets.json`, for the embedding/reranker
+    comparison notebooks (`02_embedding_model_comparison.ipynb`,
+    `03_reranker_comparison.ipynb`).
+
+    Each ticket's `relevant_docs` is the single knowledge-base doc_id (the
+    record's intent) that `build_knowledge_base` produces for it, so these
+    tickets are only meaningful when evaluated against the knowledge base
+    built from the *same* records (or a superset of them).
+    """
+    import random
+
+    rng = random.Random(seed)
+    sample = records if len(records) <= n else rng.sample(records, n)
+    return [{"query": r["instruction"], "relevant_docs": [r["intent"]]} for r in sample]
+
+
 def build(max_samples: int | None, output_dir: str | Path, seed: int = 42) -> None:
-    """Pull the Bitext dataset and write the knowledge base + SFT dataset to
-    `output_dir` as `bitext_knowledge_base.json` / `bitext_sft_dataset.json`.
+    """Pull the Bitext dataset and write the knowledge base, SFT dataset and
+    eval tickets to `output_dir` as `bitext_knowledge_base.json`,
+    `bitext_sft_dataset.json` and `bitext_eval_tickets.json`.
     """
     dataset = load_support_dataset(max_samples=max_samples, seed=seed)
     records = [dict(r) for r in dataset]
 
     knowledge_base = build_knowledge_base(records)
     sft_dataset = build_sft_dataset(records, knowledge_base)
+    eval_tickets = build_eval_tickets(records, seed=seed)
 
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -135,9 +157,13 @@ def build(max_samples: int | None, output_dir: str | Path, seed: int = 42) -> No
     (output_dir / "bitext_sft_dataset.json").write_text(
         json.dumps(sft_dataset, indent=2), encoding="utf-8"
     )
+    (output_dir / "bitext_eval_tickets.json").write_text(
+        json.dumps(eval_tickets, indent=2), encoding="utf-8"
+    )
     print(
-        f"Wrote {len(knowledge_base)} knowledge-base docs and "
-        f"{len(sft_dataset)} SFT examples to {output_dir}"
+        f"Wrote {len(knowledge_base)} knowledge-base docs, "
+        f"{len(sft_dataset)} SFT examples and {len(eval_tickets)} eval "
+        f"tickets to {output_dir}"
     )
 
 
